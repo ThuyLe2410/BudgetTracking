@@ -22,3 +22,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+eslint.config.js
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.js
+vite.config.ts
+node_modules
+public
+./src/vite-env.d.ts
+./assets
