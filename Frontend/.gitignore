@@ -27,9 +27,9 @@ dist-ssr
 eslint.config.js
 tsconfig.app.json
 tsconfig.json
-tsconfig.node.js
+tsconfig.node.json
 vite.config.ts
 node_modules
 public
 ./src/vite-env.d.ts
-./assets
+./src/assets
