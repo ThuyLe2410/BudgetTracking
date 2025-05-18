@@ -1,0 +1,10 @@
+# Frontend
+/Frontend/node_modules
+/Frontend/public
+/Frontend/eslint.config.js
+/Frontend/tsconfig.app.json
+/Frontend/tsconfig.node.json
+/Frontend/tsconfig.json
+/Frontend/vite.config.tsconfig
+/Frontend/src/assets
+
