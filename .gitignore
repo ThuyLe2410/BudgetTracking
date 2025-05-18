@@ -5,6 +5,6 @@
 /Frontend/tsconfig.app.json
 /Frontend/tsconfig.node.json
 /Frontend/tsconfig.json
-/Frontend/vite.config.tsconfig
+/Frontend/vite.config.ts
 /Frontend/src/assets
 
