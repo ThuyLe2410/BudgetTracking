@@ -22,18 +22,24 @@ export default function AddExpsenseModal({
       description: string;
       amount: number;
       budgetId: number;
+      expenseId:number;
+      name: string;
     }) => void;
     budgets: budgetProps[];
     expenseCategory: expenseCategoryProps[];
   };
 
   const [selectingBudgetId, setSelectingBudgetId] = useState<number>();
+  const [selectingExpenseId, setSelectingExpenseId] = useState<number>();
+  const [selectingExpenseName, setSelectingExpenseName] = useState<string>("")
 
   const onSubmit = (data: ExpenseFormInput) => {
     addExpense({
       description: data.description,
       amount: Number(data.amount),
       budgetId: data.budgetId,
+      expenseId: data.expenseId,
+      name: selectingExpenseName,
     });
     reset();
     handleClose();
@@ -48,7 +54,15 @@ export default function AddExpsenseModal({
     }
   }, [defaultBudgetId, reset, budgets]);
 
+  useEffect(()=> {
+    const selectedExpense:expenseCategoryProps[] = expenseCategory.filter(e => Number(e.id) === Number(selectingExpenseId));
+    setSelectingExpenseName(selectedExpense[0]?.name)
+  }, [selectingExpenseId,expenseCategory])
+
+
+
   if (!show) return null;
+
   console.log("expenseCategory", expenseCategory);
   console.log("selectingBudgetId", selectingBudgetId);
 
@@ -80,21 +94,22 @@ export default function AddExpsenseModal({
         <p className="mt-3">Expense Type</p>
         <select
           className="w-full h-10 border-1 p-1"
-          {...register("expense", { required: true })}>
+          {...register("expenseId", { required: true})}
+          onChange={(e) => setSelectingExpenseId(Number(e.target.value))}>
           {expenseCategory
             .filter(
               (e: expenseCategoryProps) =>
                 Number(e.budgetId) === Number(selectingBudgetId)
             )
             .map((expense: expenseCategoryProps) => (
-              <option key={expense.id}>{expense.name}</option>
+              <option key={expense.id} value={expense.id}>{expense.name}</option>
             ))}
         </select>
 
         <p className="mt-3">Description</p>
         <input
           className="w-full h-10 border-1 p-1"
-          {...register("description", { required: true })}
+          {...register("description")}
         />
 
         <p className="mt-3">Amount</p>
