@@ -1,13 +1,13 @@
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
 import type {
   ExpenseFormInput,
   AddExpenseModalProps,
   budgetProps,
+  expenseCategoryProps,
 } from "../types";
-import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "../contexts/BudgetContext";
+import { useBudgets } from "../contexts/BudgetContext";
 
 export default function AddExpsenseModal({
   show,
@@ -17,14 +17,17 @@ export default function AddExpsenseModal({
   const { register, handleSubmit, reset } = useForm<ExpenseFormInput>({
     defaultValues: { budgetId: defaultBudgetId },
   });
-  const { addExpense, budgets } = useBudgets() as {
+  const { addExpense, budgets, expenseCategory } = useBudgets() as {
     addExpense: (data: {
       description: string;
       amount: number;
-      budgetId: string;
+      budgetId: number;
     }) => void;
     budgets: budgetProps[];
+    expenseCategory: expenseCategoryProps[];
   };
+
+  const [selectingBudgetId, setSelectingBudgetId] = useState<number>();
 
   const onSubmit = (data: ExpenseFormInput) => {
     addExpense({
@@ -37,11 +40,17 @@ export default function AddExpsenseModal({
   };
 
   useEffect(() => {
-    reset({ budgetId: defaultBudgetId });
-  }, [defaultBudgetId, reset]);
+    if (defaultBudgetId !== undefined) {
+      reset({ budgetId: defaultBudgetId });
+      setSelectingBudgetId(defaultBudgetId);
+    } else if (budgets.length > 0) {
+      setSelectingBudgetId(budgets[0].id);
+    }
+  }, [defaultBudgetId, reset, budgets]);
 
   if (!show) return null;
-  console.log('defaultBudgetId', defaultBudgetId)
+  console.log("expenseCategory", expenseCategory);
+  console.log("selectingBudgetId", selectingBudgetId);
 
   return (
     <div className="absolute top-10 left-1/2 transform -translate-x-1/2 z-50 w-full  max-w-lg border-1 border-b-gray-200 bg-white rounded-xl">
@@ -50,25 +59,12 @@ export default function AddExpsenseModal({
           <div className="text-center text-2xl font-bold">New Expense</div>
           <button onClick={handleClose}>x</button>
         </div>
-        <p className="mt-3">Description</p>
-        <input
-          className="w-full h-10 border-1 p-1"
-          {...register("description", { required: true })}
-        />
-
-        <p className="mt-3">Amount</p>
-        <input
-          className="w-full h-10 border-1 p-1"
-          {...register("amount", { required: true })}
-        />
 
         <p className="mt-3">Budget</p>
         <select
           className="w-full h-10 border-1 p-1"
-          {...register("budgetId", { required: true })}>
-          {(defaultBudgetId === UNCATEGORIZED_BUDGET_ID || defaultBudgetId === undefined) ?  (
-            <option value={UNCATEGORIZED_BUDGET_ID}>Uncategorized</option>
-          ): ("")}
+          {...register("budgetId", { required: true })}
+          onChange={(e) => setSelectingBudgetId(Number(e.target.value))}>
           {(defaultBudgetId
             ? budgets.filter(
                 (budget: budgetProps) => budget.id === defaultBudgetId
@@ -80,6 +76,32 @@ export default function AddExpsenseModal({
             </option>
           ))}
         </select>
+
+        <p className="mt-3">Expense Type</p>
+        <select
+          className="w-full h-10 border-1 p-1"
+          {...register("expense", { required: true })}>
+          {expenseCategory
+            .filter(
+              (e: expenseCategoryProps) =>
+                Number(e.budgetId) === Number(selectingBudgetId)
+            )
+            .map((expense: expenseCategoryProps) => (
+              <option key={expense.id}>{expense.name}</option>
+            ))}
+        </select>
+
+        <p className="mt-3">Description</p>
+        <input
+          className="w-full h-10 border-1 p-1"
+          {...register("description", { required: true })}
+        />
+
+        <p className="mt-3">Amount</p>
+        <input
+          className="w-full h-10 border-1 p-1"
+          {...register("amount", { required: true })}
+        />
 
         <div className="flex justify-end mt-3">
           <button className="bg-green-600 rounded" type="submit">
