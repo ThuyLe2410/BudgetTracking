@@ -2,19 +2,23 @@
 
 import { useForm } from "react-hook-form";
 import { useBudgets } from "../contexts/BudgetContext";
-import type { AddBudgetModalProps, BudgetFormInput } from "../types";
+import type { AddBudgetModalProps, budgetCategoryProps, BudgetFormInput, budgetProps } from "../types";
 
 export default function AddBudgetModal({
   show,
   handleClose,
 }: AddBudgetModalProps) {
   const { register, handleSubmit, reset } = useForm<BudgetFormInput>();
-  const { addBudget } = useBudgets() as {
-    addBudget: (data: BudgetFormInput) => void;
-  };
+  const {budgetCategory, addBudget} = useBudgets() as {
+    budgetCategory: budgetCategoryProps[],
+    addBudget: (data: budgetProps) => void;
+  }
 
   const onSubmit = (data: BudgetFormInput) => {
-    addBudget({ name: data.name, max: Number(data.maxSpending) });
+    
+    const category = budgetCategory.find((b) => b.id === Number(data.id));
+    if (!category) return;
+    addBudget({ id: Number(data.id), name: category.name, max: Number(data.maxSpending) });
     reset();
     handleClose();
   };
@@ -31,11 +35,13 @@ export default function AddBudgetModal({
           </div>
 
           <p className="mt-3">Name</p>
-          <input
-            className="w-full h-10 border-1 p-1"
-            {...register("name", { required: true })}
-          />
-
+          <select className="w-full h-10 border-1 p-1"
+          {...register("id", { required: true })}>
+            {budgetCategory.map((b: budgetCategoryProps) => (
+              <option key={b.id} value={b.id}>{b.name}</option>
+            ))}
+          </select>
+       
           <p className="mt-3">Maximum spending</p>
           <input
             className="w-full h-10 border-1 p-1"
