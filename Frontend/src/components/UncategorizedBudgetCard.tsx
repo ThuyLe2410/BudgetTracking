@@ -1,6 +1,6 @@
 
 import BudgetCard from "./BudgetCard";
-import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "../contexts/BudgetContext";
+import {  useBudgets } from "../contexts/BudgetContext";
 import type { expenseProps } from "../types";
 
 export default function UncategorizedBudgetCard({
@@ -11,17 +11,18 @@ export default function UncategorizedBudgetCard({
   onViewExpenseClick: () => void;
 }) {
   const { getBudgetExpense } = useBudgets() as {
-    getBudgetExpense: (budgetId: string) => expenseProps[];
+    getBudgetExpense: (budgetId: number) => expenseProps[];
   };
-  const amount = getBudgetExpense(UNCATEGORIZED_BUDGET_ID).reduce(
+  const amount = getBudgetExpense(1).reduce(
     (total: number, expense: expenseProps) => total + expense.amount,
     0
   );
-  if (amount === 0) return null;
+
   return (
     <BudgetCard
       amount={amount}
-      name="Uncategorized"
+      max={amount}
+      name={"Uncategorized"}
       onAddExpenseClick={onAddExpenseClick}
       onViewExpenseClick={onViewExpenseClick}
     />
