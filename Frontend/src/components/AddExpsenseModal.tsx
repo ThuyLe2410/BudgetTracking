@@ -22,7 +22,7 @@ export default function AddExpsenseModal({
       description: string;
       amount: number;
       budgetId: number;
-      expenseId:number;
+      expenseTypeId:number;
       name: string;
     }) => void;
     budgets: budgetProps[];
@@ -30,16 +30,14 @@ export default function AddExpsenseModal({
   };
 
   const [selectingBudgetId, setSelectingBudgetId] = useState<number>();
-  const [selectingExpenseId, setSelectingExpenseId] = useState<number>();
-  const [selectingExpenseName, setSelectingExpenseName] = useState<string>("")
 
   const onSubmit = (data: ExpenseFormInput) => {
     addExpense({
       description: data.description,
       amount: Number(data.amount),
       budgetId: data.budgetId,
-      expenseId: data.expenseId,
-      name: selectingExpenseName,
+      expenseTypeId: data.expenseTypeId,
+      name: "",
     });
     reset();
     handleClose();
@@ -53,13 +51,6 @@ export default function AddExpsenseModal({
       setSelectingBudgetId(budgets[0].id);
     }
   }, [defaultBudgetId, reset, budgets]);
-
-  useEffect(()=> {
-    const selectedExpense:expenseCategoryProps[] = expenseCategory.filter(e => Number(e.id) === Number(selectingExpenseId));
-    setSelectingExpenseName(selectedExpense[0]?.name)
-  }, [selectingExpenseId,expenseCategory])
-
-
 
   if (!show) return null;
 
@@ -94,8 +85,8 @@ export default function AddExpsenseModal({
         <p className="mt-3">Expense Type</p>
         <select
           className="w-full h-10 border-1 p-1"
-          {...register("expenseId", { required: true})}
-          onChange={(e) => setSelectingExpenseId(Number(e.target.value))}>
+          {...register("expenseTypeId", { required: true})}
+          >
           {expenseCategory
             .filter(
               (e: expenseCategoryProps) =>

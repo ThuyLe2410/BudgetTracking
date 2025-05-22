@@ -24,6 +24,7 @@ const BudgetContext = React.createContext<BudgetContextType | undefined>(
 );
 
 export const TOTAL_BUDGET_ID = 0;
+export const UNCATEGORIZED_BUDGET_ID = 1;
 export function useBudgets() {
   return useContext(BudgetContext);
 }

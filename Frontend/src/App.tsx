@@ -2,37 +2,43 @@ import "./App.css";
 import BudgetCard from "./components/BudgetCard";
 import { useState } from "react";
 import AddBudgetModal from "./components/AddBudgetModal";
-import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "./contexts/BudgetContext";
+import {
+  TOTAL_BUDGET_ID,
+  useBudgets,
+  UNCATEGORIZED_BUDGET_ID,
+} from "./contexts/BudgetContext";
 import type { budgetProps, expenseProps } from "./types";
 import AddExpsenseModal from "./components/AddExpsenseModal";
+import ViewExpenseModal from "./components/ViewExpenseModal";
 import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
 import TotalBudgetCard from "./components/TotalBudgetCard";
-import ViewExpenseModal from "./components/ViewExpenseModal";
 
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
-  const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] =
-    useState<string|undefined>();
-  const [viewExpenseModalBudgetId, setViewExpenseModalBudgetId] =
-    useState<string|null>(null);
+  const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState<
+    number | undefined
+  >();
+  const [viewExpenseModalBudgetId, setViewExpenseModalBudgetId] = useState<
+    number | null
+  >(null);
 
   const { budgets, expenses, getBudgetExpense, deleteBudget } =
     useBudgets() as {
-        budgets: budgetProps[],
-        expenses: expenseProps[],
-        getBudgetExpense: (budgetId:string|null) => expenseProps[],
-        deleteBudget: (id:string) => void
+      budgets: budgetProps[];
+      expenses: expenseProps[];
+      getBudgetExpense: (budgetId: number | null) => expenseProps[];
+      deleteBudget: (id: number) => void;
     };
 
   console.log("budgets", budgets);
   console.log("expenses", expenses);
 
-  function openAddExpenseModal(budgetId: string|undefined) {
+  function openAddExpenseModal(budgetId: number | undefined) {
     setAddExpenseModalBudgetId(budgetId);
     setShowAddExpenseModal(true);
   }
-
+  console.log("viewExpenseModalBudgetId", viewExpenseModalBudgetId);
 
   return (
     <div className="flex flex-col mt-5 w-full">
@@ -42,33 +48,45 @@ function App() {
           <button onClick={() => setShowAddBudgetModal(true)}>
             Add Budget
           </button>
-          <button onClick={() => openAddExpenseModal(undefined)}>Add Expense</button>
+          <button onClick={() => openAddExpenseModal(undefined)}>
+            Add Expense
+          </button>
         </div>
       </header>
 
       <div>
-        {budgets.map((budget: budgetProps) => {
-          const amount = getBudgetExpense(budget.id).reduce(
-            (total: number, expense: expenseProps) => total + expense.amount,
-            0
-          );
-          return (
-            <BudgetCard
-              key={budget.id}
-              name={budget.name}
-              amount={amount}
-              max={budget.max}
-              onDeleteBudget={() => deleteBudget(budget.id)}
-              onAddExpenseClick={() => openAddExpenseModal(budget.id)}
-              onViewExpenseClick={() => setViewExpenseModalBudgetId(budget.id)}
-            />
-          );
-        })}
+        {budgets
+          .filter((budget) => budget.id !== 1)
+          .map((budget: budgetProps) => {
+            const amount = getBudgetExpense(budget.id).reduce(
+              (total: number, expense: expenseProps) => total + expense.amount,
+              0
+            );
+            return (
+              <BudgetCard
+                key={budget.id}
+                name={budget.name}
+                amount={amount}
+                max={budget.max}
+                onDeleteBudget={() => deleteBudget(budget.id)}
+                onAddExpenseClick={() => openAddExpenseModal(budget.id)}
+                onViewExpenseClick={() =>
+                  setViewExpenseModalBudgetId(budget.id)
+                }
+              />
+            );
+          })}
         <UncategorizedBudgetCard
-          onViewExpenseClick={() => setViewExpenseModalBudgetId(UNCATEGORIZED_BUDGET_ID)}
+          onViewExpenseClick={() =>
+            setViewExpenseModalBudgetId(UNCATEGORIZED_BUDGET_ID)
+          }
           onAddExpenseClick={() => openAddExpenseModal(UNCATEGORIZED_BUDGET_ID)}
         />
-        <TotalBudgetCard onViewExpenseClick={() => setViewExpenseModalBudgetId("Total")}/>
+        <TotalBudgetCard
+          onViewExpenseClick={() =>
+            setViewExpenseModalBudgetId(TOTAL_BUDGET_ID)
+          }
+        />
       </div>
 
       <AddBudgetModal

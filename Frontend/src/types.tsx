@@ -1,57 +1,72 @@
-
 export type AddBudgetModalProps = {
-    show: boolean;
-    handleClose: () => void
-}
+  show: boolean;
+  handleClose: () => void;
+};
 
 export type BudgetFormInput = {
-    name: string;
-    maxSpending: number
-}
+  id: string;
+  maxSpending: number;
+};
 
 export type TypeBudgetCard = {
-    name: string;
-    amount: number;
-    max?: number;
-    onDeleteBudget?:()=> void
-    onAddExpenseClick?: () => void;
-    onViewExpenseClick?: () => void
-  };
+  name: string;
+  amount: number;
+  max?: number;
+  onDeleteBudget?: () => void;
+  onAddExpenseClick?: () => void;
+  onViewExpenseClick?: () => void;
+};
 
 export type BudgetContextType = {
-    budgets: budgetProps[];
-    expenses: expenseProps[];
-    getBudgetExpense: (budgetId: string) => expenseProps[];
-    addExpense: (expense: Omit<expenseProps, "id">) => void;
-    addBudget: (budget: budgetProps) => void;
-    deleteBudget: (id: string) => void;
-    deleteExpense: (id: string) => void;
-  };
+  budgets: budgetProps[];
+  budgetCategory: budgetCategoryProps[];
+  expenses: expenseProps[];
+  expenseCategory: expenseCategoryProps[];
+  getBudgetExpense: (budgetId: number) => expenseProps[];
+  addExpense: (expense: Omit<expenseProps, "id">) => void;
+  addBudget: (budget: budgetProps) => void;
+  deleteBudget: (id: number) => void;
+  deleteExpense: (expenseProps: expenseProps) => void;
+};
 
 export type childrenProps = { children: React.ReactNode };
 
 export type expenseProps = {
-    id: string;
-    description: string;
-    amount: number;
-    budgetId: string;
-  };
+  id: number;
+  description: string;
+  amount: number;
+  budgetId: number;
+  expenseTypeId: number;
+  name: string;
+};
 
 export type budgetProps = {
-    id: string;
-    name: string;
-    max: number;
-  };
+  id: number;
+  name: string;
+  max: number;
+};
+
+export type budgetCategoryProps = {
+  id: number;
+  name: string;
+};
+
+export type expenseCategoryProps = {
+  id: number;
+  name: string;
+  budgetId: number;
+};
 
 export type AddExpenseModalProps = {
-    show: boolean,
-    handleClose: () => void,
-    defaultBudgetId: string | undefined
-}
+  show: boolean;
+  handleClose: () => void;
+  defaultBudgetId: number | undefined;
+};
 
 export type ExpenseFormInput = {
-    description: string,
-    amount: number,
-    budgetId:string
-}
-  
+  description: string;
+  amount: number;
+  budgetId: number;
+  expenseTypeId: number;
+  name: string;
+};

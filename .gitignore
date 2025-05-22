@@ -1,10 +1,15 @@
 # Frontend
-/Frontend/node_modules
-/Frontend/public
-/Frontend/eslint.config.js
-/Frontend/tsconfig.app.json
-/Frontend/tsconfig.node.json
-/Frontend/tsconfig.json
-/Frontend/vite.config.ts
-/Frontend/src/assets
+Frontend/node_modules
+Frontend/public
+Frontend/eslint.config.js
+Frontend/tsconfig.app.json
+Frontend/tsconfig.node.json
+Frontend/tsconfig.json
+Frontend/vite.config.ts
+Frontend/src/assets
+
+Backend/node_modules
+Backend/drizzle
+Backend/.env
+Backend/note.txt
 
