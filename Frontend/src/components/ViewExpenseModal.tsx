@@ -20,10 +20,10 @@ export default function ViewExpenseModal({
   console.log("displayedExpenses",displayedExpenses)
   const budget =
     budgetId === TOTAL_BUDGET_ID
-      ? { name: "Total", id: null }
+      ? { name: "Total", id: TOTAL_BUDGET_ID }
       : budgets.find((budget: budgetProps) => budget.id === budgetId);
 
-  if (!budgetId) return null;
+  if (budgetId===null) return null;
 
   return (
     <div className="absolute top-10 left-1/2 transform -translate-x-1/2 z-50 w-full  max-w-lg border-1 border-b-gray-200 bg-white rounded-xl">
