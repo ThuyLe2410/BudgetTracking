@@ -1,26 +1,26 @@
-
-import { UNCATEGORIZED_BUDGET_ID, useBudgets } from "../contexts/BudgetContext";
+import { useBudgets, TOTAL_BUDGET_ID } from "../contexts/BudgetContext";
 import type { budgetProps, expenseProps } from "../types";
 
 export default function ViewExpenseModal({
   budgetId,
   handleClose,
 }: {
-  budgetId: string | null;
+  budgetId: number | null;
   handleClose: () => void;
 }) {
   const { budgets, expenses, getBudgetExpense, deleteExpense } =
     useBudgets() as {
-        budgets: budgetProps[],
-        expenses: expenseProps[],
-        getBudgetExpense: (budgetId:string|null) => expenseProps[],
-        deleteExpense: (id:string) => void
+      budgets: budgetProps[];
+      expenses: expenseProps[];
+      getBudgetExpense: (budgetId: number | null) => expenseProps[];
+      deleteExpense: (expense: expenseProps) => void;
     };
-  const expense = budgetId==="Total" ? expenses: getBudgetExpense(budgetId);
+  const displayedExpenses =
+    budgetId === TOTAL_BUDGET_ID ? expenses : getBudgetExpense(budgetId);
+  console.log("displayedExpenses",displayedExpenses)
   const budget =
-    budgetId==="Total" ? {name: "Total", id: null} :
-    UNCATEGORIZED_BUDGET_ID === budgetId
-      ? { name: "Uncategorized", id: UNCATEGORIZED_BUDGET_ID }
+    budgetId === TOTAL_BUDGET_ID
+      ? { name: "Total", id: null }
       : budgets.find((budget: budgetProps) => budget.id === budgetId);
 
   if (!budgetId) return null;
@@ -33,15 +33,16 @@ export default function ViewExpenseModal({
         </div>
         <button onClick={handleClose}>x</button>
       </div>
-      {expense.map((expense: expenseProps) => {
+      {displayedExpenses.map((expense: expenseProps) => {
         return (
-          <ul
-            className="flex justify-between align-middle m-3"
-            key={expense.id}>
+          <ul className="flex justify-between align-middle m-3" key={expense.id}>
+            <div>{expense.name}</div>
             <div>{expense.description}</div>
             <div>
               {expense.amount}{" "}
-              <button onClick={() => deleteExpense(expense.id)}>x</button>
+              <button onClick={() => deleteExpense(expense)}>
+                x
+              </button>
             </div>{" "}
           </ul>
         );
