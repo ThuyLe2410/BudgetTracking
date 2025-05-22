@@ -75,13 +75,14 @@ app.delete("/budgets/:id", async (req, res) => {
   }
   await db
     .update(expenses)
-    .set({ expenseId:1, name:"Uncategorized", budgetId: 1 })
+    .set({ expenseTypeId: 1, name: "Uncategorized", budgetId: 1 })
     .where(eq(expenses.budgetId, id));
 });
 
 // fetch expense
 app.get("/expenses", async (req, res) => {
   const queryResult = await db.select().from(expenses);
+  console.log('fetch expense', queryResult)
   res.send({ data: queryResult });
 });
 
@@ -98,16 +99,30 @@ app.post("/expenses", async (req, res) => {
   const name = await db
     .select({ name: expenseCategory.name })
     .from(expenseCategory)
-    .where(eq(expenseCategory.id, req.body.expenseId));
-
+    .where(eq(expenseCategory.id, req.body.expenseTypeId));
   const insertData = {
-    expenseId: req.body.expenseId,
+    expenseTypeId: req.body.expenseTypeId,
     name: name[0].name,
     description: req.body.description,
     amount: req.body.amount,
     budgetId: req.body.budgetId,
   };
   await db.insert(expenses).values(insertData);
+});
+
+// Delete Expense
+app.delete("/expenses/:id", async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const budgetId = req.body.budgetId;
+  let amount: Number;
+  if (budgetId === 1) {
+    amount = Number(req.body.amount);
+    await db
+      .update(budgets)
+      .set({ max: Number(budgets.max) - Number(amount) })
+      .where(eq(budgets.id, 1));
+  }
+  await db.delete(expenses).where(eq(expenses.id, id));
 });
 
 const run = async () => {
