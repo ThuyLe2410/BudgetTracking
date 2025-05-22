@@ -12,8 +12,22 @@ export async function fetchBudgetQuery() {
     return data
 }
 
+// fetch budget Category Query
+export async function fetchBudgetCategoryQuery() {
+    const response = await fetch("http://localhost:3000/budgetCategory", {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    const {data} = await response.json();
+    return data
+}
+
 // add Budgets data Query
 export async function addBudgetQuery({id, name, max}:budgetProps) {
+    console.log('data',id, name, max );
+
     const response = await fetch("http://localhost:3000/budgets", {
         method:"POST",
         headers: {
@@ -30,8 +44,9 @@ export async function addBudgetQuery({id, name, max}:budgetProps) {
     console.log("add new Budget", data)
 }
 
+
 // delete Budgets data Query
-export async function deleteBudgetQuery(id: string) {
+export async function deleteBudgetQuery(id: number) {
     const response = await fetch(`http://localhost:3000/budgets/${id}`, {
         method: "DELETE",
         headers: {
@@ -42,4 +57,6 @@ export async function deleteBudgetQuery(id: string) {
     const res = await response.json()
     console.log(res)
 }
+
+
 
