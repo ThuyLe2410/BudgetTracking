@@ -9,12 +9,12 @@ import {
   Rectangle,
   BarChart,
 } from "recharts";
-import type { spendingByBudgetType } from "../../types";
+import type { totalSpendingByBudgetProps } from "../../types";
 
 export default function BudgetvsSpending({
   data,
 }: {
-  data: spendingByBudgetType[];
+  data: totalSpendingByBudgetProps[];
 }) {
   return (
     <div className="h-80 w-full m-4">
