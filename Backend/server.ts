@@ -79,10 +79,17 @@ app.delete("/budgets/:id", async (req, res) => {
     .where(eq(expenses.budgetId, id));
 });
 
+//edit Budget
+app.post("/budgets/:id", async (req, res) => {
+    console.log('editBudget', req.body)
+  const id = parseInt(req.params.id, 10);
+  await db.update(budgets).set({ max: Number(req.body.max) }).where(eq(budgets.id, id));
+});
+
 // fetch expense
 app.get("/expenses", async (req, res) => {
   const queryResult = await db.select().from(expenses);
-  console.log('fetch expense', queryResult)
+  console.log("fetch expense", queryResult);
   res.send({ data: queryResult });
 });
 

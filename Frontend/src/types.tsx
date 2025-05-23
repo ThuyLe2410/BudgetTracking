@@ -3,6 +3,12 @@ export type AddBudgetModalProps = {
   handleClose: () => void;
 };
 
+export type EditBudgetModalProps = {
+  show: boolean;
+  handleClose: () => void;
+  editBudgetId: number | undefined
+};
+
 export type BudgetFormInput = {
   id: string;
   maxSpending: number;
@@ -13,6 +19,7 @@ export type TypeBudgetCard = {
   amount: number;
   max?: number;
   onDeleteBudget?: () => void;
+  onEditBudget?: () => void;
   onAddExpenseClick?: () => void;
   onViewExpenseClick?: () => void;
 };
@@ -26,6 +33,7 @@ export type BudgetContextType = {
   addExpense: (expense: Omit<expenseProps, "id">) => void;
   addBudget: (budget: budgetProps) => void;
   deleteBudget: (id: number) => void;
+  editBudget:(budget: budgetProps) => void;
   deleteExpense: (expenseProps: expenseProps) => void;
 };
 

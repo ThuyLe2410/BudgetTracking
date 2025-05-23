@@ -11,6 +11,7 @@ import {
   useAddBudgetQuery,
   useDeleteBudgetQuery,
   useBudgetCategoryQuery,
+  useEditBudgetQuery
 } from "../hooks/use-budgets.tsx";
 import {
   useExpenseQuery,
@@ -53,6 +54,13 @@ export const BudgetProvider = ({ children }: childrenProps) => {
     onDeleteBudget.mutate(id);
   }
 
+  // edit Budget
+  const onEditBudget = useEditBudgetQuery()
+  function editBudget(budget: budgetProps) {
+    onEditBudget.mutate(budget)
+  }
+
+
   // EXPENSES
   // add new Expense
   const onAddExpense = useAddExpenseQuery();
@@ -92,6 +100,7 @@ export const BudgetProvider = ({ children }: childrenProps) => {
         addExpense,
         addBudget,
         deleteBudget,
+        editBudget,
         deleteExpense,
       }}>
       {children}

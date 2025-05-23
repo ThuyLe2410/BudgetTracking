@@ -1,4 +1,5 @@
 import type { TypeBudgetCard } from "../types";
+import { SquarePen } from "lucide-react";
 
 function currencyFormat(amount: number) {
   return amount.toLocaleString("en-US", {
@@ -20,6 +21,7 @@ export default function BudgetCard({
   amount,
   max,
   onDeleteBudget,
+  onEditBudget,
   onAddExpenseClick,
   onViewExpenseClick,
 }: TypeBudgetCard) {
@@ -34,6 +36,10 @@ export default function BudgetCard({
             className=" text-red-500 hover:text-red-700"
             onClick={onDeleteBudget}>
             X
+          </button>
+          <button className="ml-1 text-emerald-500 hover:text-green-500"
+          onClick={onEditBudget}>
+            <SquarePen />
           </button>
         </div>
       )}

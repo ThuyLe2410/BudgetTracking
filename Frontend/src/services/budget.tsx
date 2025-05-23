@@ -58,5 +58,24 @@ export async function deleteBudgetQuery(id: number) {
     console.log(res)
 }
 
+// edit Budget Query
+export async function editBudgetQuery(budget: budgetProps) {
+    console.log('services budgets edit', budget)
+    const response = await fetch(`http://localhost:3000/budgets/${budget.id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: budget.id,
+            max: Number(budget.max),
+            name: budget.name
+        })
+
+    })
+    const res = await response.json()
+    console.log(res)
+}
+
 
 

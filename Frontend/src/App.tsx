@@ -12,10 +12,15 @@ import AddExpsenseModal from "./components/AddExpsenseModal";
 import ViewExpenseModal from "./components/ViewExpenseModal";
 import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
 import TotalBudgetCard from "./components/TotalBudgetCard";
+import EditBudgetModal from "./components/EditBudgetModal";
 
 function App() {
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
+  const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
+  const [editBudgetId, setEditBudgetId] = useState<
+    number |undefined
+  >();
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState<
     number | undefined
   >();
@@ -38,7 +43,10 @@ function App() {
     setAddExpenseModalBudgetId(budgetId);
     setShowAddExpenseModal(true);
   }
-  console.log("viewExpenseModalBudgetId", viewExpenseModalBudgetId);
+  function openEditBudgetModal(budget:budgetProps) {
+    setEditBudgetId(budget.id);
+    setShowEditBudgetModal(true);
+  }
 
   return (
     <div className="flex flex-col mt-5 w-full">
@@ -69,6 +77,7 @@ function App() {
                 amount={amount}
                 max={budget.max}
                 onDeleteBudget={() => deleteBudget(budget.id)}
+                onEditBudget={() => openEditBudgetModal(budget)}
                 onAddExpenseClick={() => openAddExpenseModal(budget.id)}
                 onViewExpenseClick={() =>
                   setViewExpenseModalBudgetId(budget.id)
@@ -103,6 +112,11 @@ function App() {
         budgetId={viewExpenseModalBudgetId}
         handleClose={() => setViewExpenseModalBudgetId(null)}
       />
+
+      <EditBudgetModal 
+      show ={showEditBudgetModal}
+      editBudgetId={editBudgetId}
+      handleClose={() => setShowEditBudgetModal(false)}/>
     </div>
   );
 }

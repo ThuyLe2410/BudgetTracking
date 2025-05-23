@@ -4,6 +4,7 @@ import {
   addBudgetQuery,
   deleteBudgetQuery,
   fetchBudgetCategoryQuery,
+  editBudgetQuery
 } from "../services/budget";
 import type { budgetProps, expenseProps } from "../types";
 
@@ -111,4 +112,35 @@ export function useDeleteBudgetQuery() {
       queryClient.setQueryData(["expenses"], context?.prevExpenses)
     },
   });
+}
+// edit Budget
+export function useEditBudgetQuery() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (budget: budgetProps) => {
+      console.log('hook useBudget edit Budget', budget)
+      return editBudgetQuery(budget)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey:["budgets"]})
+    },
+    onMutate: async(budget: budgetProps) => {
+      await queryClient.cancelQueries({ queryKey: ["budgets"] });
+      const prevBudget = queryClient.getQueryData(["budgets"])
+      queryClient.setQueryData(["budgets"], (old: budgetProps[]) => 
+      {return old.map((b) => {
+        if (Number(b.id === budget.id)) {
+          return {
+            ...b,
+            max:budget.max
+          }
+        }
+        return b
+      })})
+      return {prevBudget}
+    },
+    onError: (err, editBudget, context) => {
+      queryClient.setQueryData(["budgets"], context?.prevBudget)
+    }
+  })
 }
