@@ -78,3 +78,9 @@ export type ExpenseFormInput = {
   expenseTypeId: number;
   name: string;
 };
+
+export type spendingByBudgetType = {
+  budgetName: string,
+  budgetMax: number;
+  spendingAmount: number
+}

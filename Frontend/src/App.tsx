@@ -13,14 +13,15 @@ import ViewExpenseModal from "./components/ViewExpenseModal";
 import UncategorizedBudgetCard from "./components/UncategorizedBudgetCard";
 import TotalBudgetCard from "./components/TotalBudgetCard";
 import EditBudgetModal from "./components/EditBudgetModal";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Reports from "./components/Reports";
 
 function App() {
+  const navigate = useNavigate();
   const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const [showEditBudgetModal, setShowEditBudgetModal] = useState(false);
-  const [editBudgetId, setEditBudgetId] = useState<
-    number |undefined
-  >();
+  const [editBudgetId, setEditBudgetId] = useState<number | undefined>();
   const [addExpenseModalBudgetId, setAddExpenseModalBudgetId] = useState<
     number | undefined
   >();
@@ -36,87 +37,102 @@ function App() {
       deleteBudget: (id: number) => void;
     };
 
-  console.log("budgets", budgets);
-  console.log("expenses", expenses);
+  console.log("App budgets", budgets);
+  console.log("App expenses", expenses);
 
   function openAddExpenseModal(budgetId: number | undefined) {
     setAddExpenseModalBudgetId(budgetId);
     setShowAddExpenseModal(true);
   }
-  function openEditBudgetModal(budget:budgetProps) {
+  function openEditBudgetModal(budget: budgetProps) {
     setEditBudgetId(budget.id);
     setShowEditBudgetModal(true);
   }
 
   return (
     <div className="flex flex-col mt-5 w-full">
-      <header className="flex w-full justify-between">
-        <h1>Budgets</h1>
-        <div className="flex">
-          <button onClick={() => setShowAddBudgetModal(true)}>
-            Add Budget
-          </button>
-          <button onClick={() => openAddExpenseModal(undefined)}>
-            Add Expense
-          </button>
-        </div>
-      </header>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <header className="flex w-full justify-between">
+                <h1>Budgets</h1>
+                <div className="flex">
+                  <button onClick={() => setShowAddBudgetModal(true)}>
+                    Add Budget
+                  </button>
+                  <button onClick={() => openAddExpenseModal(undefined)}>
+                    Add Expense
+                  </button>
+                  <button onClick={() => navigate("/reports")}>Reports</button>
+                </div>
+              </header>
+              <div>
+                {budgets
+                  .filter((budget) => budget.id !== 1)
+                  .map((budget: budgetProps) => {
+                    const amount = getBudgetExpense(budget.id).reduce(
+                      (total: number, expense: expenseProps) =>
+                        total + expense.amount,
+                      0
+                    );
+                    return (
+                      <BudgetCard
+                        key={budget.id}
+                        name={budget.name}
+                        amount={amount}
+                        max={budget.max}
+                        onDeleteBudget={() => deleteBudget(budget.id)}
+                        onEditBudget={() => openEditBudgetModal(budget)}
+                        onAddExpenseClick={() => openAddExpenseModal(budget.id)}
+                        onViewExpenseClick={() =>
+                          setViewExpenseModalBudgetId(budget.id)
+                        }
+                      />
+                    );
+                  })}
+                <UncategorizedBudgetCard
+                  onViewExpenseClick={() =>
+                    setViewExpenseModalBudgetId(UNCATEGORIZED_BUDGET_ID)
+                  }
+                  onAddExpenseClick={() =>
+                    openAddExpenseModal(UNCATEGORIZED_BUDGET_ID)
+                  }
+                />
+                <TotalBudgetCard
+                  onViewExpenseClick={() =>
+                    setViewExpenseModalBudgetId(TOTAL_BUDGET_ID)
+                  }
+                />
+              </div>
 
-      <div>
-        {budgets
-          .filter((budget) => budget.id !== 1)
-          .map((budget: budgetProps) => {
-            const amount = getBudgetExpense(budget.id).reduce(
-              (total: number, expense: expenseProps) => total + expense.amount,
-              0
-            );
-            return (
-              <BudgetCard
-                key={budget.id}
-                name={budget.name}
-                amount={amount}
-                max={budget.max}
-                onDeleteBudget={() => deleteBudget(budget.id)}
-                onEditBudget={() => openEditBudgetModal(budget)}
-                onAddExpenseClick={() => openAddExpenseModal(budget.id)}
-                onViewExpenseClick={() =>
-                  setViewExpenseModalBudgetId(budget.id)
-                }
+              <AddExpsenseModal
+                show={showAddExpenseModal}
+                handleClose={() => setShowAddExpenseModal(false)}
+                defaultBudgetId={addExpenseModalBudgetId}
               />
-            );
-          })}
-        <UncategorizedBudgetCard
-          onViewExpenseClick={() =>
-            setViewExpenseModalBudgetId(UNCATEGORIZED_BUDGET_ID)
+
+              <ViewExpenseModal
+                budgetId={viewExpenseModalBudgetId}
+                handleClose={() => setViewExpenseModalBudgetId(null)}
+              />
+
+              <EditBudgetModal
+                show={showEditBudgetModal}
+                editBudgetId={editBudgetId}
+                handleClose={() => setShowEditBudgetModal(false)}
+              />
+            </>
           }
-          onAddExpenseClick={() => openAddExpenseModal(UNCATEGORIZED_BUDGET_ID)}
         />
-        <TotalBudgetCard
-          onViewExpenseClick={() =>
-            setViewExpenseModalBudgetId(TOTAL_BUDGET_ID)
-          }
-        />
-      </div>
+        <Route path="/reports" element={<Reports />} />
+      </Routes>
 
       <AddBudgetModal
         show={showAddBudgetModal}
         handleClose={() => setShowAddBudgetModal(false)}
       />
-      <AddExpsenseModal
-        show={showAddExpenseModal}
-        handleClose={() => setShowAddExpenseModal(false)}
-        defaultBudgetId={addExpenseModalBudgetId}
-      />
-
-      <ViewExpenseModal
-        budgetId={viewExpenseModalBudgetId}
-        handleClose={() => setViewExpenseModalBudgetId(null)}
-      />
-
-      <EditBudgetModal 
-      show ={showEditBudgetModal}
-      editBudgetId={editBudgetId}
-      handleClose={() => setShowEditBudgetModal(false)}/>
     </div>
   );
 }
