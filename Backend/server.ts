@@ -32,6 +32,7 @@ app.get("/budgetCategory", async (req, res) => {
 // fetch budgets Data
 app.get("/budgets", async (req, res) => {
   const queryResult = await db.select().from(budgets);
+  console.log('fetch Budgets', queryResult)
   res.send({ data: queryResult });
 });
 

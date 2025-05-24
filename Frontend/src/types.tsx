@@ -79,8 +79,14 @@ export type ExpenseFormInput = {
   name: string;
 };
 
-export type spendingByBudgetType = {
+export type totalSpendingByBudgetProps = {
   budgetName: string,
   budgetMax: number;
   spendingAmount: number
+}
+
+type itemProps = {expenseName: string, amount: number}
+export type spendingByBudgetProps = {
+  amount: number,
+  items: itemProps []
 }
