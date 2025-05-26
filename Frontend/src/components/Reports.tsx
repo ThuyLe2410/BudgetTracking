@@ -32,7 +32,8 @@ export default function Reports() {
 
   const spendingByBudget: Record<string, spendingByBudgetProps> =
     expenses.reduce((acc, expense: expenseProps) => {
-      const key = budgets.find((budget) => expense.budgetId === budget.id)?.name?? "";
+      const key =
+        budgets.find((budget) => expense.budgetId === budget.id)?.name ?? "";
       console.log("key", key);
 
       if (!acc[key]) {
@@ -42,10 +43,18 @@ export default function Reports() {
         };
       }
       acc[key].amount += expense.amount;
-      acc[key].items.push({
-        expenseName: expense.name,
-        amount: expense.amount,
-      });
+      const existingItem = acc[key].items.find(
+        (item) => item.expenseName === expense.name
+      );
+      if (existingItem) {
+        existingItem.amount += expense.amount;
+      } else {
+        acc[key].items.push({
+          expenseName: expense.name,
+          amount: expense.amount,
+        });
+      }
+
       if (!acc["Total"]) {
         acc["Total"] = {
           amount: 0,
@@ -53,10 +62,18 @@ export default function Reports() {
         };
       }
       acc["Total"].amount += expense.amount;
-      acc["Total"].items.push({
-        expenseName: expense.name,
-        amount: expense.amount,
-      });
+      const existingTotalItem = acc["Total"].items.find(
+        (item) => item.expenseName === expense.name
+      );
+      if (existingTotalItem) {
+        existingTotalItem.amount += expense.amount;
+      } else {
+        acc["Total"].items.push({
+          expenseName: expense.name,
+          amount: expense.amount,
+        });
+      }
+
       return acc;
     }, {} as Record<string, spendingByBudgetProps>);
 
@@ -69,7 +86,7 @@ export default function Reports() {
         <button onClick={() => navigate("/")}>Back</button>
       </header>
       <BudgetvsSpending data={totalSpendingByBudget} />
-      <SpendingByBudgetType data ={spendingByBudget}/>
+      <SpendingByBudgetType data={spendingByBudget} />
     </div>
   );
 }
