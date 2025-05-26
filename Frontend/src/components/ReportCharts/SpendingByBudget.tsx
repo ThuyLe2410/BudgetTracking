@@ -9,7 +9,8 @@ export default function SpendingByBudgetType({
 }) {
   const [selectedBudgetType, setSelectedBudgetType] = useState("Total");
   const pieData = data[selectedBudgetType]?.items;
-  const COLORS = generateColors(pieData.length);
+  const COLORS = generateColors(pieData?.length);
+  console.log('pieData', pieData)
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
     cx,
@@ -23,6 +24,7 @@ export default function SpendingByBudgetType({
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    
     return (
       <text x={x} y={y} fill="black" textAnchor={x > cx ? "start" : "end"}>
         {`${pieData[index].expenseName} ${(percent * 100).toFixed(0)}%`}
@@ -46,26 +48,27 @@ export default function SpendingByBudgetType({
         </select>
         <div>Amount: {data[selectedBudgetType]?.amount ?? 0}</div>
       </div>
-      <div>
+      <div className="h-[400px] w-full m-4">
+        {pieData && pieData.length > 0 && (
         <ResponsiveContainer width="100%" height="100%">
-          <PieChart width={800} height={800}>
+          <PieChart width={400} height={400}>
             <Pie
               data={pieData}
               cx="50%"
               cy="50%"
               dataKey="amount"
               nameKey="expenseName"
-              labelLine={false}
-              outerRadius={100}
+              labelLine={true}
+  
               fill="#8884d8"
-              label={renderCustomizedLabel}>
+              outerRadius={80} label>
               {pieData.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                <Cell key={`cell-${index}`} fill={COLORS?.[index % COLORS.length] || '#ccc'} />
               ))}
             </Pie>
             <Legend />
           </PieChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer>)}
       </div>
     </div>
   );
